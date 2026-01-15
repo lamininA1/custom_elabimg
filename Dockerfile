@@ -246,7 +246,7 @@ COPY ./src/php/elabpool.conf /etc/php84/php-fpm.d/elabpool.conf
 ADD https://github.com/lamininA1/custom_elabftw/tarball/master src.tgz
 # extracted folder will be named elabftw-elabftw-0abcdef
 # we only copy the strict necessary
-RUN tar xzf src.tgz && mv */ src \
+RUN tar xzf src.tgz && mv lamininA1-custom_elabftw-* src \
     && mkdir /elabftw \
     && mv src/bin /elabftw \
     && mv src/.babelrc /elabftw \
