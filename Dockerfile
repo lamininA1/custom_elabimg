@@ -243,10 +243,10 @@ COPY ./src/php/elabpool.conf /etc/php84/php-fpm.d/elabpool.conf
 
 # ELABFTW
 # get the tar archive for the tagged version/branch we want
-ADD https://github.com/elabftw/elabftw/tarball/$ELABFTW_VERSION src.tgz
+ADD https://github.com/lamininA1/custom_elabftw/tarball/master src.tgz
 # extracted folder will be named elabftw-elabftw-0abcdef
 # we only copy the strict necessary
-RUN tar xzf src.tgz && mv elabftw-* src \
+RUN tar xzf src.tgz && mv lamininA1-elabftw-* src \
     && mkdir /elabftw \
     && mv src/bin /elabftw \
     && mv src/.babelrc /elabftw \
