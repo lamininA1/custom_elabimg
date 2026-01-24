@@ -2,7 +2,7 @@
 # nginx custom + php-fpm + elabftw complete production files
 # https://github.com/elabftw/elabimg
 
-FROM golang:1.25-alpine3.22 AS go-builder
+FROM golang:1.25-alpine3.23 AS go-builder
 # using an explicit default argument for TARGETPLATFORM will override the buildx implicit value
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
@@ -15,7 +15,7 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCH=amd64; elif [ "$TARGETPL
 
 # build nginx with only the bare minimum of features or modules
 # Note: no need to chain the RUN commands here as it's a builder image and nothing will be kept
-FROM alpine:3.22 AS nginx-builder
+FROM alpine:3.23 AS nginx-builder
 
 ENV NGINX_VERSION=1.28.1
 # pin nginx modules versions
@@ -124,7 +124,7 @@ RUN make install
 #############################
 # ELABFTW + NGINX + PHP-FPM #
 #############################
-FROM alpine:3.22
+FROM alpine:3.23
 
 # this is versioning for the container image
 ENV ELABIMG_VERSION=5.8.0
@@ -267,7 +267,7 @@ WORKDIR /elabftw
 
 # COMPOSER
 ENV COMPOSER_HOME=/composer
-COPY --from=composer:2.9.3 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.9.4 /usr/bin/composer /usr/bin/composer
 
 # this allows to skip the (long) build in dev mode where /elabftw will be bind-mounted anyway
 # pass it to build command with --build-arg BUILD_ALL=0
