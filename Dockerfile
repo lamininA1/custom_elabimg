@@ -2,7 +2,7 @@
 # nginx custom + php-fpm + elabftw complete production files
 # https://github.com/elabftw/elabimg
 
-FROM golang:1.24-alpine3.21 AS go-builder
+FROM golang:1.25-alpine3.23 AS go-builder
 # using an explicit default argument for TARGETPLATFORM will override the buildx implicit value
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
@@ -15,15 +15,15 @@ RUN if [ "$TARGETPLATFORM" = "linux/amd64" ]; then ARCH=amd64; elif [ "$TARGETPL
 
 # build nginx with only the bare minimum of features or modules
 # Note: no need to chain the RUN commands here as it's a builder image and nothing will be kept
-FROM alpine:3.21 AS nginx-builder
+FROM alpine:3.23 AS nginx-builder
 
-ENV NGINX_VERSION=1.28.0
+ENV NGINX_VERSION=1.28.1
 # pin nginx modules versions
 # see https://github.com/google/ngx_brotli/issues/120 for the lack of tags
 # BROKEN HASH: ENV NGX_BROTLI_COMMIT_HASH=63ca02abdcf79c9e788d2eedcc388d2335902e52
 ENV NGX_BROTLI_COMMIT_HASH=6e975bcb015f62e1f303054897783355e2a877dc
 # https://github.com/openresty/headers-more-nginx-module/tags
-ENV HEADERS_MORE_VERSION=v0.37
+ENV HEADERS_MORE_VERSION=v0.39
 # releases can be signed by any key on this page https://nginx.org/en/pgp_keys.html
 # so this might need to be updated for a new release
 # available keys: mdounin, maxim, sb, thresh
@@ -124,10 +124,10 @@ RUN make install
 #############################
 # ELABFTW + NGINX + PHP-FPM #
 #############################
-FROM alpine:3.21
+FROM alpine:3.23
 
 # this is versioning for the container image
-ENV ELABIMG_VERSION=5.7.1
+ENV ELABIMG_VERSION=5.8.0
 
 # the target elabftw version is passed with --build-arg
 # it is a mandatory ARG
@@ -213,7 +213,7 @@ RUN ln -f /usr/bin/php84 /usr/bin/php
 # S6-OVERLAY
 # install s6-overlay, our init system. Workaround for different versions using TARGETPLATFORM
 # platform see https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope
-ARG S6_OVERLAY_VERSION=3.2.0.0
+ARG S6_OVERLAY_VERSION=3.2.1.0
 ENV S6_OVERLAY_VERSION=$S6_OVERLAY_VERSION
 
 # using an explicit default argument for TARGETPLATFORM will override the buildx implicit value
@@ -260,13 +260,14 @@ RUN tar xzf src.tgz && mv lamininA1-custom_elabftw-* src \
     && mv src/web /elabftw \
     && mv src/yarn.lock /elabftw \
     && mv src/.yarnrc.yml /elabftw \
+    && mv src/var /elabftw \
     && rm -r src src.tgz
 
 WORKDIR /elabftw
 
 # COMPOSER
 ENV COMPOSER_HOME=/composer
-COPY --from=composer:2.8.8 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.9.4 /usr/bin/composer /usr/bin/composer
 
 # this allows to skip the (long) build in dev mode where /elabftw will be bind-mounted anyway
 # pass it to build command with --build-arg BUILD_ALL=0
