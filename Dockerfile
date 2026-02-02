@@ -263,6 +263,10 @@ RUN tar xzf src.tgz && mv lamininA1-custom_elabftw-* src \
     && mv src/var /elabftw \
     && rm -r src src.tgz
 
+# Fix line endings for executable scripts (CRLF -> LF)
+RUN find /elabftw/bin -type f -exec sed -i 's/\r$//' {} \; \
+    && chmod +x /elabftw/bin/console /elabftw/bin/init
+
 WORKDIR /elabftw
 
 # COMPOSER
