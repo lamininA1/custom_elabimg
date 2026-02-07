@@ -35,10 +35,9 @@ ENV HEADERS_MORE_VERSION=v0.39
 # do not use KEY in the env name to avoid warning by getSecretsRegex() from buildkit
 ENV PGP_SIGNING_PUBK_OWNER=thresh
 
-# Optimized: Added APK cache mount and symlink for faster package installation
+# Optimized: Added APK cache mount for faster package installation
 RUN --mount=type=cache,target=/var/cache/apk \
-    ln -s /var/cache/apk /etc/apk/cache && \
-    apk add --no-cache git libc-dev pcre2-dev make gcc zlib-dev openssl-dev binutils gnupg cmake brotli-dev
+    apk update && apk upgrade -U -a && apk add --no-cache git libc-dev pcre2-dev make gcc zlib-dev openssl-dev binutils gnupg cmake brotli-dev
 
 # create a builder user and group
 RUN addgroup -S -g 3148 builder && adduser -D -S -G builder -u 3148 builder
@@ -180,10 +179,9 @@ RUN mkdir -p /var/log/nginx \
 # imagemagick-svg is for mathjax support in pdfs
 # imagemagick-heic is for support for heic/heif
 # don't put line comments inside this instruction
-# Optimized: Added APK cache mount and symlink for faster package installation
+# Optimized: Added APK cache mount for faster package installation
 RUN --mount=type=cache,target=/var/cache/apk \
-    ln -s /var/cache/apk /etc/apk/cache && \
-    apk upgrade -U -a && apk add --no-cache \
+    apk update && apk upgrade -U -a && apk add --no-cache \
     bash \
     brotli \
     curl \
