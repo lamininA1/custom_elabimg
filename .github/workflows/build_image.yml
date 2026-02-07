@@ -1,9 +1,6 @@
 name: Simple Build and Push
 
 on:
-  push:
-    branches:
-      - master
   workflow_dispatch: 
 
 jobs:
@@ -16,9 +13,6 @@ jobs:
     steps:
       - name: Checkout elabimg repo
         uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -36,7 +30,7 @@ jobs:
           context: .
           push: true
           # 일반적인 서버(Intel/AMD)용으로만 빌드하여 속도 향상
-          platforms: linux/amd64, linux/arm64
+          platforms: linux/amd64
           build-args: |
             ELABFTW_VERSION=master
             BUILD_ALL=1
