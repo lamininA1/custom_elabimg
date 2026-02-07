@@ -32,7 +32,7 @@ jobs:
           push: true
           platforms: linux/arm64
           # Surface Pro용으로 쓸 거니까 태그를 고정해두면 편합니다
-          tags: ghcr.io/${{ github.repository_owner }}/elabimg:custom-arm64
+          tags: ghcr.io/laminina1/elabimg:custom-arm64
           build-args: |
             ELABFTW_VERSION=master
             BUILD_ALL=1
